@@ -20,3 +20,8 @@ W / Up throttle, S / Down brake, A / D steer, Space handbrake, Shift nitro,
 C camera, P pause, M mute, F fullscreen, R reset.
 
 Have fun!
+
+**Website: https://sunset-rush-cloud.dpmnx.workers.dev/play**
+This is a more convinent way to play the game for anyone who doesn't want to download any files.
+Multiplayer is included in the website but you will be required to create an account or sign in to one upon opning the website for the first time.
+Remember: You can only access the website if you have internet connection. If you want to play offline, download the latest game files in the releases tab.
