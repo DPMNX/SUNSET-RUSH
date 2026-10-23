@@ -1,4 +1,3 @@
-[START_HERE.txt](https://github.com/user-attachments/files/33849551/START_HERE.txt)
 SUNSET RUSH
 ===========
 
