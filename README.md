@@ -1,0 +1,23 @@
+[START_HERE.txt](https://github.com/user-attachments/files/33849551/START_HERE.txt)
+SUNSET RUSH
+===========
+
+SOLO
+----
+Double-click SUNSET_RUSH.html.
+
+The standalone build is single-player. The hosted Cloudflare version adds
+username/password accounts, account-synced personal bests and automatic
+host-track multiplayer.
+
+MULTIPLAYER
+-----------
+Use the Cloudflare hosting bundle for public online play. The local server here
+is for LAN testing only.
+
+CONTROLS
+--------
+W / Up throttle, S / Down brake, A / D steer, Space handbrake, Shift nitro,
+C camera, P pause, M mute, F fullscreen, R reset.
+
+Have fun.
