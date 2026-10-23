@@ -1,0 +1,14 @@
+{
+  "name": "sunset-rush",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SUNSET RUSH - cinematic procedural 3D street-racing game.",
+  "license": "MIT",
+  "scripts": {
+    "start": "node tools/serve.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.22.0"
+  }
+}
