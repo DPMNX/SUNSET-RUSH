@@ -9,9 +9,10 @@ The standalone build is single-player.
 
 MULTIPLAYER
 -----------
-Double click PLAY_ONLINE.cmd
+Double-click PLAY_ONLINE.cmd
 This will open up a local server.
-CLick the address at the top and share the ones on the bottom to your friends.
+The game should auotmatically open up in your browser, if not, double-click the server address at the top.
+To play with your friends, send the link on the bottom.
 
 CONTROLS
 --------
