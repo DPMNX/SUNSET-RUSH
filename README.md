@@ -12,6 +12,7 @@ Double-click PLAY_ONLINE.cmd
 This will open up a local server.
 The game should auotmatically open up in your browser, if not, double-click the server address at the top.
 To play with your friends, send the link on the bottom.
+A room can be started with one racer; more drivers can join before the race starts.
 
 CONTROLS
 --------

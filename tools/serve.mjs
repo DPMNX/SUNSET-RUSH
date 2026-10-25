@@ -135,6 +135,18 @@ function broadcastRoom(room) {
   broadcast(room, { type: 'room', room: roomPayload(room) });
 }
 
+function finishRoomIfComplete(room) {
+  if (room.phase !== 'racing') return false;
+  const everyone = [...room.players.values()].every((p) => p.finishTime !== null);
+  if (!everyone || room.players.size === 0) return false;
+  room.phase = 'results';
+  const results = [...room.players.values()]
+    .map((p) => ({ id: p.id, name: p.name, time: p.finishTime }))
+    .sort((a, b) => a.time - b.time);
+  broadcast(room, { type: 'raceOver', results });
+  return true;
+}
+
 function startRoomRace(room) {
   let slot = 0;
   for (const p of room.players.values()) {
@@ -178,6 +190,7 @@ function removeFromRoom(ws) {
   }
   if (room.hostId === player.id) room.hostId = room.players.keys().next().value;
   broadcast(room, { type: 'left', id: player.id, name: player.name });
+  finishRoomIfComplete(room);
   broadcastRoom(room);
 }
 
@@ -264,15 +277,6 @@ wss.on('connection', (ws) => {
         send(ws, { type: 'error', message: 'That room is full.' });
         return;
       }
-      const joinTrack = safeTrack(msg.track);
-      const joinWeather = safeWeather(msg.weather);
-      if (joinTrack !== target.track || joinWeather !== target.weather) {
-        send(ws, {
-          type: 'error',
-          message: `That room is ${TRACK_NAMES[target.track]} / ${WEATHER_NAMES[target.weather]}. Set TRACK to ${TRACK_NAMES[target.track]} and WEATHER to ${WEATHER_NAMES[target.weather]}, then join again.`,
-        });
-        return;
-      }
       player.name = safeName(msg.name);
       player.carId = safeCar(msg.carId);
       player.ready = false;
@@ -281,6 +285,31 @@ wss.on('connection', (ws) => {
       target.players.set(player.id, player);
       player.roomCode = code;
       broadcastRoom(target);
+      return;
+    }
+
+    if (msg.type === 'ping') {
+      send(ws, { type: 'pong', t: msg.t ?? Date.now(), serverTime: Date.now() });
+      return;
+    }
+
+    if (msg.type === 'inspect') {
+      const code = String(msg.code || '').trim().toUpperCase();
+      const target = rooms.get(code);
+      if (!target) {
+        send(ws, { type: 'roomInfo', code, found: false });
+        return;
+      }
+      send(ws, {
+        type: 'roomInfo',
+        code: target.code,
+        found: true,
+        track: target.track,
+        weather: target.weather,
+        phase: target.phase,
+        players: target.players.size,
+        max: maxRacers,
+      });
       return;
     }
 
@@ -312,10 +341,6 @@ wss.on('connection', (ws) => {
         return;
       }
       if (room.phase !== 'lobby') return;
-      if (room.players.size < 2) {
-        send(ws, { type: 'error', message: 'Invite at least one more racer.' });
-        return;
-      }
       const waiting = [...room.players.values()].filter((p) => p.id !== room.hostId && !p.ready);
       if (waiting.length) {
         send(ws, { type: 'error', message: `Waiting for ${waiting.map((p) => p.name).join(', ')} to ready up.` });
@@ -402,14 +427,7 @@ wss.on('connection', (ws) => {
       if (player.finishTime !== null) return;
       player.finishTime = Math.min(3600, time);
       broadcast(room, { type: 'finished', id: player.id, time: player.finishTime, name: player.name });
-      const everyone = [...room.players.values()].every((p) => p.finishTime !== null);
-      if (everyone) {
-        room.phase = 'results';
-        const results = [...room.players.values()]
-          .map((p) => ({ id: p.id, name: p.name, time: p.finishTime }))
-          .sort((a, b) => a.time - b.time);
-        broadcast(room, { type: 'raceOver', results });
-      }
+      finishRoomIfComplete(room);
       return;
     }
 
@@ -432,7 +450,6 @@ wss.on('connection', (ws) => {
       return;
     }
 
-    if (msg.type === 'ping') send(ws, { type: 'pong', t: Date.now() });
   });
 
   ws.on('close', () => removeFromRoom(ws));
