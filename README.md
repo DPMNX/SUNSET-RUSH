@@ -1,5 +1,5 @@
-SUNSET RUSH
-===========
+SUNSET RUSH — v1.1.0
+====================
 
 SOLO
 ----
